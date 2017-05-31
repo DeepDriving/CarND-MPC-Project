@@ -34,7 +34,7 @@ N = 10
 dt = 0.05
 
 I tried N > 10 and found the vehicle couldnot handle sharp turns.  10 seems to be the optimal case for N.  Lower dt seems to cause osicilations. 
-This N multiplied by dt (0.05 *10) gives 0.5 second, so our predictive controller only predicts the set of states for next 1 second .  This seems about correct for a highly volatile environment for a vehicle driving on a high speed in a high traffic environment.
+This N multiplied by dt (0.05 *10) gives 0.5 second, so our predictive controller only predicts the set of states for next 0.5 second .  This seems about correct for a highly volatile environment for a vehicle driving on a high speed in a high traffic environment.
 
 
 
