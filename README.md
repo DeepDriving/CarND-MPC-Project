@@ -37,5 +37,3 @@ I tried N > 10 and found the vehicle couldnot handle sharp turns.  10 seems to b
 This N multiplied by dt (0.05 *10) gives 0.5 second, so our predictive controller only predicts the set of states for next 0.5 second .  This seems about correct for a highly volatile environment for a vehicle driving on a high speed in a high traffic environment.
 
 
-
-## Latency
