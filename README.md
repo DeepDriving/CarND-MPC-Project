@@ -36,4 +36,10 @@ dt = 0.05
 I tried N > 10 and found the vehicle couldnot handle sharp turns.  10 seems to be the optimal case for N.  Lower dt seems to cause osicilations. 
 This N multiplied by dt (0.05 *10) gives 0.5 second, so our predictive controller only predicts the set of states for next 0.5 second .  This seems about correct for a highly volatile environment for a vehicle driving on a high speed in a high traffic environment.
 
+# 3rd order polynomial to the waypoints
 
+The simulation provided relevant trajectory waypoints for the vehicles's current location, however, both the trajectory waypoints and the vehicle's location and heading were given in the global reference frame. To simplify the MPC calculations, I converted both the waypoints and the vehicle's location to the vehicle coordinate frame. This was acheived by translating, then rotating the points in the global coordinate frame using the vehicle's current location and heading. Then, the trajectory points were fit to a 3rd order polynomial, whose coefficents were fed to the MPC.
+
+# Latency Handling
+
+no latency handling was necessary because of low speed (~20 MPH)
