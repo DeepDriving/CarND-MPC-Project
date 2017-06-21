@@ -42,4 +42,6 @@ The simulation provided relevant trajectory waypoints for the vehicles's current
 
 # Latency Handling
 
-no latency handling was necessary because of low speed (~20 MPH)
+To handle latency,the current state of the vehicle was projected forward by the latency time using the current actuator values, then used that as the initial state for the MPC. Thus, the optimal action computed by the MPC would be the optimal action at the time that the controls take effect.
+
+
