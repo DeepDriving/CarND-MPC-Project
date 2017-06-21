@@ -30,11 +30,10 @@ All values are based on vehicle coordinate system. Under this model the transiti
 
 The number of steps and duration of each step were chosen empirically as follows:
 
-N = 10 
-dt = 0.05
+N = 25
+dt = 0.1
 
-I tried N > 10 and found the vehicle couldnot handle sharp turns.  10 seems to be the optimal case for N.  Lower dt seems to cause osicilations. 
-This N multiplied by dt (0.05 *10) gives 0.5 second, so our predictive controller only predicts the set of states for next 0.5 second .  This seems about correct for a highly volatile environment for a vehicle driving on a high speed in a high traffic environment.
+After some trials, I settled with N=25 and dt =0.1. It seems to give good solutions.
 
 # 3rd order polynomial to the waypoints
 
