@@ -16,6 +16,7 @@ using json = nlohmann::json;
 constexpr double pi() { return M_PI; }
 double deg2rad(double x) { return x * pi() / 180; }
 double rad2deg(double x) { return x * 180 / pi(); }
+const double latency = 0.1 ; //seconds
 
 // Checks if the SocketIO event has JSON data.
 // If there is data the JSON object in string format will be returned,
@@ -90,8 +91,9 @@ int main() {
           double px = j[1]["x"];
           double py = j[1]["y"];
           double psi = j[1]["psi"];
-          double v = j[1]["speed"];
-
+          double v = double (j[1]["speed"])*0.44704;  //convert mph to m/s
+          double current_steer = j[1]["steering_angle"];
+          double current_throttle = j[1]["throttle"];
 
           //convert ptsx&ptsy to vehicle coordinate
           vector<double> ptsx_car;
@@ -113,22 +115,24 @@ int main() {
           //fit to a 3 degree polynomial
           auto coeffs = polyfit(ptsx_xd, ptsy_xd, 3);
 
-           //calculate cte; px, py become 0 in vehicle coordinate
-          px = 0; // need to consider latency
-          py = 0;
-          double cte = polyeval(coeffs, px) - py;
+           
+          double ego_x = 0 + v*cos(0)*latency;
+          double ego_y = 0 + v*sin(0)*latency;
+          double ego_psi = 0 + v/Lf*current_steer*deg2rad(25)*latency;
+          double ego_v = v+ current_throttle*latency;
+          double ego_cte = polyeval(coeffs, ego_x) - ego_y;
           //orientation errer of a 3 degree polynomial
-          double epsi = -atan(coeffs[1] + 2 * px * coeffs[2] + 3 * px * px * coeffs[3]);
+          double ego_epsi = -atan(coeffs[1])+v/Lf*current_steer*deg2rad(25)*latency;
 
           //create a state vector
           Eigen::VectorXd state(6);
           //in vehicle coordinate, px, py, and psi are 0
-          state << 0, 0, 0, v, cte, epsi;
+          state << ego_x, ego_y, ego_psi, ego_v, ego_cte, ego_epsi;
 
           //run mpc
           auto vars = mpc.Solve(state, coeffs);
 
-          double steer_value = -vars[6];
+          double steer_value = -vars[6]/deg2rad(25);
           double throttle_value = vars[7];
 
           /*

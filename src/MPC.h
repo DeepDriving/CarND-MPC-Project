@@ -10,6 +10,8 @@ using namespace std;
 using CppAD::AD;
 typedef CPPAD_TESTVECTOR(double) Dvector;
 
+extern const double Lf;
+
 class MPC {
  public:
   MPC();

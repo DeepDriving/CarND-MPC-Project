@@ -6,17 +6,17 @@
 using CppAD::AD;
 
 // TODO: Set the timestep length and duration
-size_t N = 10;
-double dt = 0.05;
+size_t N = 25;
+double dt = 0.1;
 
 // Multipliers for the cost computation
-const double cost_state_cte    = 300.0;
-const double cost_state_epsi   = 50.0;
+const double cost_state_cte    = 1.0;
+const double cost_state_epsi   = 1.0;
 const double cost_state_v      = 1.0;
-const double cost_val_steering = 200.0;
+const double cost_val_steering = 5.0;
 const double cost_val_throttle = 50.0;
-const double cost_seq_steering = 5000.0;
-const double cost_seq_throttle = 100.0;
+const double cost_seq_steering = 800.0;
+const double cost_seq_throttle = 10.0;
 
 // This value assumes the model presented in the classroom is used.
 //
@@ -34,7 +34,7 @@ const double Lf = 2.67;
 // The reference velocity is set to 40 mph.
 double ref_cte = 0;
 double ref_epsi = 0;
-double ref_v = 40;
+double ref_v = 40*0.44704;
 
 // The solver takes all the state variables and actuator
 // variables in a singular vector. Thus, we should to establish
@@ -65,15 +65,15 @@ class FG_eval {
 
     // The part of the cost based on the reference state.
     for (int i = 0; i < N; i++) {
-      fg[0] += cost_state_cte  * CppAD::pow(vars[cte_start + i] - ref_cte, 2);
-      fg[0] += cost_state_epsi * CppAD::pow(vars[epsi_start + i] - ref_epsi, 2);
-      fg[0] += cost_state_v * CppAD::pow(vars[v_start + i] - ref_v, 2);
+      fg[0] +=  cost_state_cte * CppAD::pow(vars[cte_start + i] - ref_cte, 2);
+      fg[0] +=  cost_state_epsi * CppAD::pow(vars[epsi_start + i] - ref_epsi, 2);
+      fg[0] +=  cost_state_v * CppAD::pow(vars[v_start + i] - ref_v, 2);
     }
 
     // Minimize the use of actuators.
     for (int i = 0; i < N - 1; i++) {
-      fg[0] += cost_val_steering * CppAD::pow(vars[delta_start + i], 2);
-      fg[0] += cost_val_throttle * CppAD::pow(vars[a_start + i], 2);
+      fg[0] +=  cost_val_steering * CppAD::pow(vars[delta_start + i], 2);
+      fg[0] +=  cost_val_throttle * CppAD::pow(vars[a_start + i], 2);
     }
 
     // Minimize the value gap between sequential actuations.
@@ -121,8 +121,14 @@ class FG_eval {
       AD<double> delta0 = vars[delta_start + i];
       AD<double> a0 = vars[a_start + i];
 
+
+      AD<double> f0 = coeffs[0] + coeffs[1] * x0 + coeffs[2] * CppAD::pow(x0,2) + coeffs[3] * CppAD::pow(x0,3);
+      AD<double> psides0 = CppAD::atan(3*coeffs[3]*CppAD::pow(x0,2) + 2*coeffs[2]*x0 + coeffs[1]);
+
+      /*
       AD<double> f0 = coeffs[0] + coeffs[1] * x0;
       AD<double> psides0 = CppAD::atan(coeffs[1]);
+      */
 
       // Here's `x` to get you started.
       // The idea here is to constraint this value to be 0.
