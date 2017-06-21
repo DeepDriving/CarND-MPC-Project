@@ -33,7 +33,7 @@ The number of steps and duration of each step were chosen empirically as follows
 N = 25
 dt = 0.1
 
-After some trials, I settled with N=25 and dt =0.1. It seems to give good solutions.
+After some trials, I settled with N=25 and dt =0.1. It seems to give good result.
 
 # 3rd order polynomial to the waypoints
 
